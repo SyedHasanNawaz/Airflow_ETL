@@ -1,0 +1,4 @@
+# apache-airflow is pre-installed in Astro Runtime
+pymongo
+requests
+pandas
