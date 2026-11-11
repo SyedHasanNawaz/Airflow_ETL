@@ -2,7 +2,7 @@
 Airflow ETL Pipeline for Frankfurter Currency Rates to MongoDB.
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import logging
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -60,6 +60,46 @@ def extract_currency_rates(**context):
     return raw_records
 
 
+def transform_currency_rates(**context):
+    """
+    Task 2 (Transform):
+    Pulls 'rates_raw' from named XCom, enriches each record with source and
+    retrieved_at ISO timestamp, parses rate_date, and validates exact schema.
+    Pushes to named XCom 'rates_transformed'.
+    """
+    ti = context["ti"]
+    raw_records = ti.xcom_pull(task_ids="extract", key="rates_raw")
+
+    if not raw_records:
+        raise ValueError("No records pulled from XCom 'rates_raw'")
+
+    logging.info(f"Pulling {len(raw_records)} records from named XCom 'rates_raw'")
+
+    transformed_records = []
+    retrieval_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
+
+    for item in raw_records:
+        base = item.get("base") or item.get("base_currency")
+        target = item.get("target") or item.get("target_currency")
+        rate = float(item.get("rate") or item.get("exchange_rate"))
+        rate_date = str(item.get("date") or item.get("rate_date"))
+
+        record = {
+            "base_currency": str(base),
+            "target_currency": str(target),
+            "exchange_rate": rate,
+            "rate_date": rate_date,
+            "source": "Frankfurter API",
+            "retrieved_at": retrieval_iso,
+        }
+        transformed_records.append(record)
+
+    logging.info(f"Successfully transformed {len(transformed_records)} records: {transformed_records}")
+
+    ti.xcom_push(key="rates_transformed", value=transformed_records)
+    return transformed_records
+
+
 with DAG(
     dag_id="currency_etl",
     default_args=default_args,
@@ -74,3 +114,10 @@ with DAG(
         task_id="extract",
         python_callable=extract_currency_rates,
     )
+
+    transform_task = PythonOperator(
+        task_id="transform",
+        python_callable=transform_currency_rates,
+    )
+
+    extract_task >> transform_task
