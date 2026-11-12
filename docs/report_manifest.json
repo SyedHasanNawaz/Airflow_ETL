@@ -1,0 +1,109 @@
+{
+  "title": "Task 3: Building Airflow ETL Pipeline",
+  "course": "MLOps / Advanced Operations (Fall 2026)",
+  "student_name": "Syed Hasan Nawaz",
+  "roll_number": "23i0703",
+  "github_url": "https://github.com/SyedHasanNawaz/Airflow_ETL.git",
+  "sections": [
+    {
+      "section_title": "1. Docker Infrastructure & Services Configuration",
+      "subheadings": [
+        {
+          "subheading_title": "1.1 Docker Services Architecture & Compose Setup (mongo, mongo-express, etl_net, mongo_data)",
+          "screenshots": [
+            {
+              "file": "01_docker_services_override.png",
+              "caption": "Figure 1: Docker Compose override defining mongo, mongo-express, named volume mongo_data, and named network etl_net."
+            },
+            {
+              "file": "02_docker_ps_network_volume.png",
+              "caption": "Figure 2: Active Docker services validating container status, named network etl_net, and named volume mongo_data."
+            }
+          ]
+        },
+        {
+          "subheading_title": "1.2 Environment Variables & Git-Ignore Validation",
+          "screenshots": [
+            {
+              "file": "03_env_gitignore_check.png",
+              "caption": "Figure 3: Verification of .env.example template and proof that .env is ignored by Git using git check-ignore."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_title": "2. Airflow Environment & Connection Setup",
+      "subheadings": [
+        {
+          "subheading_title": "2.1 Astro Development Environment Lifecycle",
+          "screenshots": [
+            {
+              "file": "04_astro_dev_start.png",
+              "caption": "Figure 4: Astro CLI development environment initialization and startup via astro dev start."
+            },
+            {
+              "file": "05_astro_dev_ps.png",
+              "caption": "Figure 5: Astro CLI component health checks showing all Airflow and database containers running and healthy."
+            }
+          ]
+        },
+        {
+          "subheading_title": "2.2 Airflow MongoDB Connection (mongo_default)",
+          "screenshots": [
+            {
+              "file": "06_mongo_connection_setup.png",
+              "caption": "Figure 6: Automated configuration and verification of Airflow connection mongo_default connecting to mongo on port 27017."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_title": "3. Currency ETL Pipeline Execution",
+      "subheadings": [
+        {
+          "subheading_title": "3.1 Frankfurter Public Currency API Inspection",
+          "screenshots": [
+            {
+              "file": "07_api_curl_query.png",
+              "caption": "Figure 7: Live Frankfurter API query returning JSON daily currency rates for EUR base and USD, GBP, JPY quotes."
+            }
+          ]
+        },
+        {
+          "subheading_title": "3.2 Airflow DAG Trigger & Execution via Named XCom",
+          "screenshots": [
+            {
+              "file": "08_dag_run_success.png",
+              "caption": "Figure 8: Successful execution of currency_etl DAG verifying extract, transform, and load tasks with named XCom data transfer."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "section_title": "4. Database Verification & Web Administration",
+      "subheadings": [
+        {
+          "subheading_title": "4.1 MongoDB CLI Verification via mongosh",
+          "screenshots": [
+            {
+              "file": "09_mongosh_verification.png",
+              "caption": "Figure 9: mongosh query inside the mongo container confirming exchange_rates records and unique compound index."
+            }
+          ]
+        },
+        {
+          "subheading_title": "4.2 Mongo Express Web Administration Interface",
+          "screenshots": [
+            {
+              "file": "10_mongo_express_ui.png",
+              "caption": "Figure 10: Mongo Express web dashboard at http://localhost:8081 showing exchange_rates collection with transformed documents."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
